@@ -1,0 +1,134 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" ng-app="whogrowthchart">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <script src="components/loader.js"></script>
+    <script src="lib/onsenui/js/onsenui.min.js"></script>
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="lib/onsenui/js/angular-onsenui.min.js"></script>
+    <script src="lib/mobiscroll/js/jquery.min.2.2.3.js"></script>
+    <script src="lib/mobiscroll/js/mobiscroll.core.js"></script>
+    <script src="lib/mobiscroll/js/mobiscroll.appframework.js"></script>
+    <script src="lib/mobiscroll/js/mobiscroll.frame.js"></script>
+    <script src="lib/mobiscroll/js/mobiscroll.scroller.js"></script>
+    <script src="lib/mobiscroll/js/mobiscroll.util.datetime.js"></script>
+    <script src="lib/mobiscroll/js/mobiscroll.datetimebase.js"></script>
+    <script src="lib/mobiscroll/js/mobiscroll.datetime.js"></script>
+    <script src="lib/mobiscroll/js/mobiscroll.android-holo-light.js"></script>
+    <script src="lib/mobiscroll/js/i18n/mobiscroll.i18n.zh.js"></script>
+    <script src="lib/who/WHOGrowthData.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="components/loader.css">
+    <link rel="stylesheet" type="text/css" href="lib/onsenui/css/onsenui.css">
+    <link rel="stylesheet" type="text/css" href="lib/onsenui/css/onsen-css-components.css">
+    <link rel="stylesheet" type="text/css" href="lib/mobiscroll/css/mobiscroll.animation.css"/>
+    <link rel="stylesheet" type="text/css" href="lib/mobiscroll/css/mobiscroll.frame.css"/>
+    <link rel="stylesheet" type="text/css" href="lib/mobiscroll/css/mobiscroll.frame.android-holo.css"/>
+    <link rel="stylesheet" type="text/css" href="lib/mobiscroll/css/mobiscroll.scroller.css"/>
+    <link rel="stylesheet" type="text/css" href="lib/mobiscroll/css/mobiscroll.scroller.android-holo.css"/>
+    <link rel="stylesheet" type="text/css" href="lib/mobiscroll/css/mobiscroll.android-holo-light.css"/>
+
+    <script>
+        var whogrowthchart = angular.module('whogrowthchart', ['onsen']);
+        whogrowthchart.controller('AppController', function($scope) { });
+        whogrowthchart.controller('PageController', function($scope) {
+            $scope.vm = {
+              bdob:'',
+              sex:'',
+              height:'',
+              weight:''
+            };
+            $scope.ShowChart = function(){
+              console.log(angular.toJson($scope.vm));
+              myNavigator.pushPage('chart.html', { animation : 'slide' } );
+            };
+            ons.ready(function() {
+                // Init code here
+                $('#bdob').mobiscroll().date({
+                    theme: 'android-holo-light',     // Specify theme like: theme: 'ios' or omit setting to use default
+                    mode: 'scroller',       // Specify scroller mode like: mode: 'mixed' or omit setting to use default
+                    display: 'bottom', // Specify display mode like: display: 'bottom' or omit setting to use default
+                    lang: 'zh',        // Specify language like: lang: 'pl' or omit setting to use default
+                    maxDate: new Date(),
+                    minDate: new Date(2010, 1, 1),
+                    onClosed: function (valueText, inst) {
+                      $scope.vm.bdob = valueText;
+                      $("#bdob").val(valueText);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <body ng-controller="AppController">
+    <ons-navigator animation="slide" var="myNavigator">
+        <ons-page ng-controller="PageController">
+            <ons-toolbar>
+                <div class="center">WHO生长曲线</div>
+            </ons-toolbar>
+            <br>
+            <ons-list modifier="inset">
+                <ons-list-header>生日</ons-list-header>
+                <ons-list-item modifier="longdivider">
+                    <ons-input id="bdob" modifier="material" float ng-model="vm.bdob"></ons-input><ons-icon icon="fa-calendar"></ons-icon>
+                </ons-list-item>
+                <ons-list-header>性别</ons-list-header>
+                <ons-list-item tappable modifier="longdivider">
+                    <label class="left">
+                        <ons-input name="sex" type="radio" input-id="sex_1" modifier="material" value="boy" ng-model="vm.sex"></ons-input>
+                    </label>
+                    <label for="radio-1" class="center">
+                        男宝宝
+                    </label>
+                </ons-list-item>
+                <ons-list-item tappable modifier="longdivider">
+                    <label class="left">
+                        <ons-input name="sex" type="radio" input-id="sex_2" modifier="material" value="girl" ng-model="vm.sex"></ons-input>
+                    </label>
+                    <label for="radio-2" class="center">
+                        女宝宝
+                    </label>
+                </ons-list-item>
+                <ons-list-header>身高</ons-list-header>
+                <ons-list-item modifier="longdivider">
+                    <ons-input id="height" modifier="material" placeholder="cm" float ng-model="vm.height"></ons-input>
+                </ons-list-item>
+                <ons-list-header>体重</ons-list-header>
+                <ons-list-item modifier="longdivider">
+                    <ons-input id="weight" modifier="material" placeholder="kg" float ng-model="vm.weight"></ons-input>
+                </ons-list-item>
+            </ons-list>
+            <br>
+            <ons-row>
+                <ons-col width="10%"></ons-col>
+                <ons-col><ons-button modifier="material large" ripple ng-click="ShowChart()"><ons-ripple></ons-ripple><ons-icon icon="fa-line-chart"></ons-icon> 查看生长曲线</ons-button></ons-col>
+                <ons-col width="10%"></ons-col>
+            </ons-row>
+        </ons-page>
+    </ons-navigator>
+    <ons-template id="chart.html">
+        <ons-page>
+            <ons-toolbar>
+              <div class="left">
+                <ons-back-button>Back</ons-back-button>
+              </div>
+              <div class="center">WHO生长曲线</div>
+            </ons-toolbar>
+            
+            <div style="text-align: center">
+              
+            </div>
+        </ons-page>
+    </ons-template>
+    <ons-modal var="modalwait">
+        <ons-icon size="50px" spin icon="md-spinner"></ons-icon>
+        <br>
+        <br> 努力加载中...
+        <br>
+    </ons-modal>
+  </body>
+</body>
+</html>

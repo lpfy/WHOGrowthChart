@@ -1,0 +1,26 @@
+{
+    "plugins": [
+        "mobi.monaca.plugins.Monaca",
+        "mobi.monaca.plugins.datepicker@1.0.1"
+    ],
+    "framework_version": "3.5",
+    "xcode_version": "6",
+    "cordova_version": "5.2",
+    "plugin_settings": [],
+    "external_plugins": [
+        "cordova-plugin-whitelist@1.0.0",
+        "cordova-plugin-splashscreen@2.1.0"
+    ],
+    "title-ja": "",
+    "title-en": "test",
+    "description-ja": "",
+    "description-en": "test",
+    "category": "User Template",
+    "platform": [
+        "android",
+        "ios",
+        "winrt",
+        "chrome"
+    ],
+    "name": "generated-1463573024-5735ec5f7e2193ac47c52e4d"
+}
