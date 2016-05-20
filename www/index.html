@@ -4,21 +4,24 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
-    <script src="components/loader.js"></script>
-    <script src="lib/onsenui/js/onsenui.min.js"></script>
-    <script src="lib/angular/angular.min.js"></script>
-    <script src="lib/onsenui/js/angular-onsenui.min.js"></script>
-    <script src="lib/mobiscroll/js/jquery.min.2.2.3.js"></script>
-    <script src="lib/mobiscroll/js/mobiscroll.core.js"></script>
-    <script src="lib/mobiscroll/js/mobiscroll.appframework.js"></script>
-    <script src="lib/mobiscroll/js/mobiscroll.frame.js"></script>
-    <script src="lib/mobiscroll/js/mobiscroll.scroller.js"></script>
-    <script src="lib/mobiscroll/js/mobiscroll.util.datetime.js"></script>
-    <script src="lib/mobiscroll/js/mobiscroll.datetimebase.js"></script>
-    <script src="lib/mobiscroll/js/mobiscroll.datetime.js"></script>
-    <script src="lib/mobiscroll/js/mobiscroll.android-holo-light.js"></script>
-    <script src="lib/mobiscroll/js/i18n/mobiscroll.i18n.zh.js"></script>
-    <script src="lib/who/WHOGrowthData.js"></script>
+    <script type="text/javascript" src="components/loader.js"></script>   
+    <script type="text/javascript" src="lib/onsenui/js/onsenui.min.js"></script>
+    <script type="text/javascript" src="lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="lib/onsenui/js/angular-onsenui.min.js"></script>
+    <script type="text/javascript" src="lib/mobiscroll/js/jquery.min.2.2.3.js"></script>
+    <script type="text/javascript" src="lib/mobiscroll/js/mobiscroll.core.js"></script>
+    <script type="text/javascript" src="lib/mobiscroll/js/mobiscroll.appframework.js"></script>
+    <script type="text/javascript" src="lib/mobiscroll/js/mobiscroll.frame.js"></script>
+    <script type="text/javascript" src="lib/mobiscroll/js/mobiscroll.scroller.js"></script>
+    <script type="text/javascript" src="lib/mobiscroll/js/mobiscroll.util.datetime.js"></script>
+    <script type="text/javascript" src="lib/mobiscroll/js/mobiscroll.datetimebase.js"></script>
+    <script type="text/javascript" src="lib/mobiscroll/js/mobiscroll.datetime.js"></script>
+    <script type="text/javascript" src="lib/mobiscroll/js/mobiscroll.android-holo-light.js"></script>
+    <script type="text/javascript" src="lib/mobiscroll/js/i18n/mobiscroll.i18n.zh.js"></script>
+    <script type="text/javascript" src="lib/who/WHOGrowthData.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/echarts/3.1.7/echarts.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script> 
+    <script type="text/javascript" src="lib/who/echarts-ng.min.js"></script>
     
     <link rel="stylesheet" type="text/css" href="components/loader.css">
     <link rel="stylesheet" type="text/css" href="lib/onsenui/css/onsenui.css">
@@ -31,18 +34,159 @@
     <link rel="stylesheet" type="text/css" href="lib/mobiscroll/css/mobiscroll.android-holo-light.css"/>
 
     <script>
-        var whogrowthchart = angular.module('whogrowthchart', ['onsen']);
-        whogrowthchart.controller('AppController', function($scope) { });
-        whogrowthchart.controller('PageController', function($scope) {
+        var option = {
+                        legend: {
+                            data:[
+                                    {name:'WHO女孩生长曲线 0 - 5岁 3%'},
+                                    {name:'WHO女孩生长曲线 0 - 5岁 15%'},
+                                    {name:'WHO女孩生长曲线 0 - 5岁 50%'},
+                                    {name:'WHO女孩生长曲线 0 - 5岁 85%'},
+                                    {name:'WHO女孩生长曲线 0 - 5岁 97%'}
+                            ]
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            formatter: "Temperature : <br/>{c0}days",
+                            showDelay : 0,
+                            axisPointer:{
+                                show: true,
+                                type : 'cross',
+                                lineStyle: {
+                                    type : 'dashed',
+                                    width : 1
+                                }
+                            },
+                            zlevel: 1
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis : [
+                            {
+                                type : 'value',
+                                scale:true
+                            }
+                        ],
+                        yAxis : [
+                            {
+                                type : 'value',
+                                scale:true
+                            }
+                        ],
+                        series: [
+                            {
+                                name: 'WHO女孩生长曲线 0 - 5岁 3%',
+                                type: 'line',
+                                smooth: true,
+                                large: true,
+                                showSymbol: true,
+                                symbolSize: 0,
+                                lineStyle: {
+                                    normal: {
+                                        color: 'red',
+                                        width: 1,
+                                        shadowColor: 'rgba(0,0,0,0.4)',
+                                        shadowBlur: 10,
+                                        shadowOffsetY: 10
+                                    }
+                                },
+                                data: WHOGrowthData.P3GrilbyDays
+                            },
+                            {
+                                name: 'WHO女孩生长曲线 0 - 5岁 15%',
+                                type: 'line',
+                                smooth: true,
+                                large: true,
+                                showSymbol: true,
+                                symbolSize: 0,
+                                lineStyle: {
+                                    normal: {
+                                        color: '#FFA500',
+                                        width: 1,
+                                        shadowColor: 'rgba(0,0,0,0.4)',
+                                        shadowBlur: 10,
+                                        shadowOffsetY: 10
+                                    }
+                                },
+                                data: WHOGrowthData.P15GrilbyDays
+                            },
+                            {
+                                name: 'WHO女孩生长曲线 0 - 5岁 50%',
+                                type: 'line',
+                                smooth: true,
+                                large: true,
+                                showSymbol: false,
+                                symbolSize: 0,
+                                lineStyle: {
+                                    normal: {
+                                        color: 'green',
+                                        width: 1,
+                                        shadowColor: 'rgba(0,0,0,0.4)',
+                                        shadowBlur: 10,
+                                        shadowOffsetY: 10
+                                    }
+                                },
+                                data: WHOGrowthData.P50GrilbyDays
+                            },
+                            {
+                                name: 'WHO女孩生长曲线 0 - 5岁 85%',
+                                type: 'line',
+                                smooth: true,
+                                large: true,
+                                showSymbol: false,
+                                symbolSize: 0,
+                                lineStyle: {
+                                    normal: {
+                                        color: '#FFA500',
+                                        width: 1,
+                                        shadowColor: 'rgba(0,0,0,0.4)',
+                                        shadowBlur: 10,
+                                        shadowOffsetY: 10
+                                    }
+                                },
+                                data: WHOGrowthData.P85GrilbyDays
+                            },
+                            {
+                                name: 'WHO女孩生长曲线 0 - 5岁 97%',
+                                type: 'line',
+                                smooth: true,
+                                large: true,
+                                showSymbol: false,
+                                symbolSize: 1,
+                                lineStyle: {
+                                    normal: {
+                                        color: 'red',
+                                        width: 1,
+                                        shadowColor: 'rgba(0,0,0,0.4)',
+                                        shadowBlur: 10,
+                                        shadowOffsetY: 10
+                                    }
+                                },
+                                data: WHOGrowthData.P97GrilbyDays
+                            }
+                        ]
+                    };
+        var whogrowthchartApp = angular.module('whogrowthchart', ['onsen', 'echarts-ng']);
+        whogrowthchartApp.controller('AppController', function($scope) { });
+        whogrowthchartApp.controller('PageController', function($scope, $echarts) {
             $scope.vm = {
               bdob:'',
               sex:'',
               height:'',
               weight:''
-            };
+            };            
             $scope.ShowChart = function(){
-              console.log(angular.toJson($scope.vm));
-              myNavigator.pushPage('chart.html', { animation : 'slide' } );
+                console.log(angular.toJson($scope.vm));
+                myNavigator.pushPage('chart.html', { 
+                    animation : 'slide' 
+                });
+                myNavigator.on("postpush", function(){
+                    //myChart.setOption(option);
+                    console.log("222");
+                });
             };
             ons.ready(function() {
                 // Init code here
@@ -58,6 +202,8 @@
                       $("#bdob").val(valueText);
                     }
                 });
+                $scope.CHART_ID = $echarts.generateInstanceIdentity();
+                $scope.CHART_OPTION = option;
             });
         });
     </script>
@@ -118,7 +264,7 @@
               <div class="center">WHO生长曲线</div>
             </ons-toolbar>
             
-            <div style="text-align: center">
+            <div echarts="CHART_ID" config="CHART_OPTION">
               
             </div>
         </ons-page>
