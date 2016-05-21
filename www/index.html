@@ -171,7 +171,7 @@
                     };
         var whogrowthchartApp = angular.module('whogrowthchart', ['onsen', 'echarts-ng']);
         whogrowthchartApp.controller('AppController', function($scope) { });
-        whogrowthchartApp.controller('PageController', function($scope, $echarts) {
+        whogrowthchartApp.controller('PageController', function($scope) {
             $scope.vm = {
               bdob:'',
               sex:'',
@@ -202,8 +202,14 @@
                       $("#bdob").val(valueText);
                     }
                 });
+            });
+        });
+        whogrowthchartApp.controller('ChartController', function($scope, $echarts) {
+            ons.ready(function() {
                 $scope.CHART_ID = $echarts.generateInstanceIdentity();
+                $scope.CHART_DIMENSION = "6:10"
                 $scope.CHART_OPTION = option;
+                $scope.CHART_WH = "{width:" + $(window).width(); + "px;height:" + $(window).height() + "px;}"
             });
         });
     </script>
@@ -256,15 +262,14 @@
         </ons-page>
     </ons-navigator>
     <ons-template id="chart.html">
-        <ons-page>
+        <ons-page ng-controller="ChartController">
             <ons-toolbar>
               <div class="left">
                 <ons-back-button>Back</ons-back-button>
               </div>
               <div class="center">WHO生长曲线</div>
             </ons-toolbar>
-            
-            <div echarts="CHART_ID" config="CHART_OPTION">
+            <div echarts="CHART_ID" config="CHART_OPTION" echarts-dimension="CHART_DIMENSION" ng-style="CHART_WH">
               
             </div>
         </ons-page>
