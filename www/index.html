@@ -179,13 +179,13 @@
               weight:''
             };            
             $scope.ShowChart = function(){
-                console.log(angular.toJson($scope.vm));
+                modalwait.show();
+                //console.log(angular.toJson($scope.vm));
                 myNavigator.pushPage('chart.html', { 
                     animation : 'slide' 
                 });
                 myNavigator.on("postpush", function(){
-                    //myChart.setOption(option);
-                    console.log("222");
+                    modalwait.hide();
                 });
             };
             ons.ready(function() {
@@ -209,7 +209,6 @@
                 $scope.CHART_ID = $echarts.generateInstanceIdentity();
                 $scope.CHART_DIMENSION = "6:10"
                 $scope.CHART_OPTION = option;
-                $scope.CHART_WH = "{width:" + $(window).width(); + "px;height:" + $(window).height() + "px;}"
             });
         });
     </script>
@@ -269,7 +268,7 @@
               </div>
               <div class="center">WHO生长曲线</div>
             </ons-toolbar>
-            <div echarts="CHART_ID" config="CHART_OPTION" echarts-dimension="CHART_DIMENSION" ng-style="CHART_WH">
+            <div echarts="CHART_ID" config="CHART_OPTION" style="width:375px;height:600px;">
               
             </div>
         </ons-page>
