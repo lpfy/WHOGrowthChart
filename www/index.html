@@ -55,7 +55,8 @@
                         grid: {
                             left: '3%',
                             right: '4%',
-                            bottom: '3%',
+                            bottom: '2%',
+                            top: '2%',
                             containLabel: true
                         },
                         xAxis : [
@@ -67,12 +68,16 @@
                         yAxis : [
                             {
                                 type : 'value',
-                                scale:true
+                                scale: true,
+                                splitNumber: 10,
+                                splitLine: {
+                                    interval: 2
+                                }
                             }
                         ],
                         series: [
                             {
-                                name: 'WHO女孩生长曲线 0 - 5岁 3%',
+                                name: '3%',
                                 type: 'line',
                                 smooth: true,
                                 large: true,
@@ -90,7 +95,7 @@
                                 data: WHOGrowthData.P3GrilbyDays
                             },
                             {
-                                name: 'WHO女孩生长曲线 0 - 5岁 15%',
+                                name: '15%',
                                 type: 'line',
                                 smooth: true,
                                 large: true,
@@ -108,7 +113,7 @@
                                 data: WHOGrowthData.P15GrilbyDays
                             },
                             {
-                                name: 'WHO女孩生长曲线 0 - 5岁 50%',
+                                name: '50%',
                                 type: 'line',
                                 smooth: true,
                                 large: true,
@@ -126,7 +131,7 @@
                                 data: WHOGrowthData.P50GrilbyDays
                             },
                             {
-                                name: 'WHO女孩生长曲线 0 - 5岁 85%',
+                                name: '85%',
                                 type: 'line',
                                 smooth: true,
                                 large: true,
@@ -144,7 +149,7 @@
                                 data: WHOGrowthData.P85GrilbyDays
                             },
                             {
-                                name: 'WHO女孩生长曲线 0 - 5岁 97%',
+                                name: '97%',
                                 type: 'line',
                                 smooth: true,
                                 large: true,
