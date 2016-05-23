@@ -183,7 +183,7 @@
             $scope.vm = vm;            
             $scope.ShowChart = function(){
                 modalwait.show();
-                //console.log(angular.toJson($scope.vm));
+                console.log(angular.toJson($scope.vm));
                 myNavigator.pushPage('chart.html', { 
                     animation : 'slide' 
                 });
@@ -203,6 +203,8 @@
                     onClosed: function (valueText, inst) {
                       $scope.vm.bdob = valueText;
                       $("#bdob").val(valueText);
+                      $scope.vm.mindays = Math.abs(moment(vm.bdob, "YYYY/MM/DD").diff(moment(), 'days')) - 50 <= 0 ? 0 : Math.abs(moment(vm.bdob, "YYYY/MM/DD").diff(moment(), 'days')) - 50;
+                      $scope.vm.maxdays = Math.abs(moment(vm.bdob, "YYYY/MM/DD").diff(moment(), 'days')) + 50;
                     }
                 });
             });
