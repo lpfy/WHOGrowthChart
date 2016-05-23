@@ -22,6 +22,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/echarts/3.1.7/echarts.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script> 
     <script type="text/javascript" src="lib/who/echarts-ng.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
     
     <link rel="stylesheet" type="text/css" href="components/loader.css">
     <link rel="stylesheet" type="text/css" href="lib/onsenui/css/onsenui.css">
@@ -169,14 +170,17 @@
                         ]
                     };
         var whogrowthchartApp = angular.module('whogrowthchart', ['onsen', 'echarts-ng']);
+        whogrowthchartApp.factory('vm', function () {
+            return { 
+                bdob:'',
+                sex:'',
+                height:'',
+                weight:''
+            };
+        });
         whogrowthchartApp.controller('AppController', function($scope) { });
-        whogrowthchartApp.controller('PageController', function($scope) {
-            $scope.vm = {
-              bdob:'',
-              sex:'',
-              height:'',
-              weight:''
-            };            
+        whogrowthchartApp.controller('InputController', function($scope, vm) {
+            $scope.vm = vm;            
             $scope.ShowChart = function(){
                 modalwait.show();
                 //console.log(angular.toJson($scope.vm));
@@ -203,11 +207,12 @@
                 });
             });
         });
-        whogrowthchartApp.controller('ChartController', function($scope, $echarts) {
+        whogrowthchartApp.controller('ChartController', function($scope, $echarts, vm) {
             ons.ready(function() {
                 $scope.CHART_ID = $echarts.generateInstanceIdentity();
                 $scope.CHART_DIMENSION = "6:10"
                 $scope.CHART_OPTION = option;
+                $scope.vm = vm;
             });
         });
     </script>
@@ -215,7 +220,7 @@
 <body>
     <body ng-controller="AppController">
     <ons-navigator animation="slide" var="myNavigator">
-        <ons-page ng-controller="PageController">
+        <ons-page ng-controller="InputController">
             <ons-toolbar>
                 <div class="center">WHO生长曲线</div>
             </ons-toolbar>
