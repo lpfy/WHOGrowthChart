@@ -184,6 +184,13 @@
             $scope.ShowChart = function(){
                 modalwait.show();
                 console.log(angular.toJson($scope.vm));
+                var data = {};
+                _.each(WHOGrowthData, function(value, key){ 
+                    data[key] = _.filter(value, function(item){ 
+                        return item[0] >= vm.mindays && item[0] <= vm.maxdays 
+                    });
+                });
+                WHOGrowthData = data;
                 myNavigator.pushPage('chart.html', { 
                     animation : 'slide' 
                 });
