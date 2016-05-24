@@ -35,13 +35,13 @@
     <link rel="stylesheet" type="text/css" href="lib/mobiscroll/css/mobiscroll.android-holo-light.css"/>
 
     <script>
-        var option = {
+        var option = function(WHOGrowthData) {
+            return  {
                         legend: {
                             show: false
                         },
                         tooltip: {
                             trigger: 'axis',
-                            formatter: "Temperature : <br/>{c0}days",
                             showDelay : 0,
                             axisPointer:{
                                 show: true,
@@ -54,22 +54,39 @@
                             zlevel: 1
                         },
                         grid: {
-                            left: '3%',
+                            left: '5%',
                             right: '4%',
-                            bottom: '2%',
+                            bottom: '5%',
                             top: '2%',
                             containLabel: true
                         },
                         xAxis : [
                             {
-                                type : 'value',
-                                scale:true
+                                type: 'value',
+                                min: 'dataMin',
+                                max: 'dataMax',
+                                scale: true,
+                                name: '出生天数',
+                                nameLocation: 'middle',
+                                nameGap: 25,
+                                nameTextStyle: {
+                                    fontSize: 14
+                                }
                             }
                         ],
                         yAxis : [
                             {
                                 type : 'value',
                                 scale: true,
+                                name: '体重(kg)',
+                                nameLocation: 'middle',
+                                nameGap: 25,
+                                nameTextStyle: {
+                                    fontSize: 14
+                                },
+                                axisLabel:{
+                                    rotate: 45
+                                },
                                 splitNumber: 10,
                                 splitLine: {
                                     interval: 2
@@ -169,6 +186,7 @@
                             }
                         ]
                     };
+        };
         var whogrowthchartApp = angular.module('whogrowthchart', ['onsen', 'echarts-ng']);
         whogrowthchartApp.factory('vm', function () {
             return { 
@@ -183,14 +201,12 @@
             $scope.vm = vm;            
             $scope.ShowChart = function(){
                 modalwait.show();
-                console.log(angular.toJson($scope.vm));
-                var data = {};
+                $scope.vm.dataSubset = {};
                 _.each(WHOGrowthData, function(value, key){ 
-                    data[key] = _.filter(value, function(item){ 
+                    $scope.vm.dataSubset[key] = _.filter(value, function(item){ 
                         return item[0] >= vm.mindays && item[0] <= vm.maxdays 
                     });
                 });
-                WHOGrowthData = data;
                 myNavigator.pushPage('chart.html', { 
                     animation : 'slide' 
                 });
@@ -210,8 +226,9 @@
                     onClosed: function (valueText, inst) {
                       $scope.vm.bdob = valueText;
                       $("#bdob").val(valueText);
-                      $scope.vm.mindays = Math.abs(moment(vm.bdob, "YYYY/MM/DD").diff(moment(), 'days')) - 50 <= 0 ? 0 : Math.abs(moment(vm.bdob, "YYYY/MM/DD").diff(moment(), 'days')) - 50;
-                      $scope.vm.maxdays = Math.abs(moment(vm.bdob, "YYYY/MM/DD").diff(moment(), 'days')) + 50;
+                      var AgeInDays = Math.abs(moment(vm.bdob, "YYYY/MM/DD").diff(moment(), 'days'));
+                      $scope.vm.mindays = AgeInDays - 50 <= 50 ? 0 : Math.floor((AgeInDays - 50)/10)*10; // Always get multiple of 10. Math.floor() get integer of division
+                      $scope.vm.maxdays = Math.floor((AgeInDays + 50)/10)*10;
                     }
                 });
             });
@@ -220,7 +237,7 @@
             ons.ready(function() {
                 $scope.CHART_ID = $echarts.generateInstanceIdentity();
                 $scope.CHART_DIMENSION = "6:10"
-                $scope.CHART_OPTION = option;
+                $scope.CHART_OPTION = new option(vm.dataSubset);
                 $scope.vm = vm;
             });
         });
