@@ -110,7 +110,7 @@
                                         shadowOffsetY: 10
                                     }
                                 },
-                                data: WHOGrowthData.P3GrilbyDays
+                                data: WHOGrowthData.P3byDays
                             },
                             {
                                 name: '15%',
@@ -128,7 +128,7 @@
                                         shadowOffsetY: 10
                                     }
                                 },
-                                data: WHOGrowthData.P15GrilbyDays
+                                data: WHOGrowthData.P15byDays
                             },
                             {
                                 name: '50%',
@@ -146,7 +146,7 @@
                                         shadowOffsetY: 10
                                     }
                                 },
-                                data: WHOGrowthData.P50GrilbyDays
+                                data: WHOGrowthData.P50byDays
                             },
                             {
                                 name: '85%',
@@ -164,7 +164,7 @@
                                         shadowOffsetY: 10
                                     }
                                 },
-                                data: WHOGrowthData.P85GrilbyDays
+                                data: WHOGrowthData.P85byDays
                             },
                             {
                                 name: '97%',
@@ -182,16 +182,65 @@
                                         shadowOffsetY: 10
                                     }
                                 },
-                                data: WHOGrowthData.P97GrilbyDays
+                                data: WHOGrowthData.P97byDays
                             }
                         ]
                     };
         };
         var whogrowthchartApp = angular.module('whogrowthchart', ['onsen', 'echarts-ng']);
+        whogrowthchartApp.directive('ngMin', function () {
+            return {
+                restrict: 'A',
+                require: 'ngModel',
+                link: function (scope, elem, attr, ctrl) {
+                    scope.$watch(attr.ngMin, function () {
+                        ctrl.$setViewValue(ctrl.$viewValue);
+                    });
+                    var minValidator = function (value) {
+                        var min = scope.$eval(attr.ngMin) || 0;
+                        if (!isEmpty(value) && value < min) {
+                            ctrl.$setValidity('ngMin', false);
+                            return undefined;
+                        } else {
+                            ctrl.$setValidity('ngMin', true);
+                            return value;
+                        }
+                    };
+        
+                    ctrl.$parsers.push(minValidator);
+                    ctrl.$formatters.push(minValidator);
+                }
+            };
+        });       
+        whogrowthchartApp.directive('ngMax', function () {
+            return {
+                restrict: 'A',
+                require: 'ngModel',
+                link: function (scope, elem, attr, ctrl) {
+                    scope.$watch(attr.ngMax, function () {
+                        ctrl.$setViewValue(ctrl.$viewValue);
+                    });
+                    var maxValidator = function (value) {
+                        var max = scope.$eval(attr.ngMax) || Infinity;
+                        if (!isEmpty(value) && value > max) {
+                            ctrl.$setValidity('ngMax', false);
+                            return undefined;
+                        } else {
+                            ctrl.$setValidity('ngMax', true);
+                            return value;
+                        }
+                    };
+        
+                    ctrl.$parsers.push(maxValidator);
+                    ctrl.$formatters.push(maxValidator);
+                }
+            };
+        });
         whogrowthchartApp.factory('vm', function () {
             return { 
                 bdob:'',
                 sex:'',
+                charttype:'',
                 height:'',
                 weight:''
             };
@@ -202,7 +251,7 @@
             $scope.ShowChart = function(){
                 modalwait.show();
                 $scope.vm.dataSubset = {};
-                _.each(WHOGrowthData, function(value, key){ 
+                _.each(WHOGrowthData[vm.sex], function(value, key){ 
                     $scope.vm.dataSubset[key] = _.filter(value, function(item){ 
                         return item[0] >= vm.mindays && item[0] <= vm.maxdays 
                     });
@@ -251,43 +300,64 @@
                 <div class="center">WHO生长曲线</div>
             </ons-toolbar>
             <br>
-            <ons-list modifier="inset">
-                <ons-list-header>生日</ons-list-header>
-                <ons-list-item modifier="longdivider">
-                    <ons-input id="bdob" modifier="material" float ng-model="vm.bdob"></ons-input><ons-icon icon="fa-calendar"></ons-icon>
-                </ons-list-item>
-                <ons-list-header>性别</ons-list-header>
-                <ons-list-item tappable modifier="longdivider">
-                    <label class="left">
-                        <ons-input name="sex" type="radio" input-id="sex_1" modifier="material" value="boy" ng-model="vm.sex"></ons-input>
-                    </label>
-                    <label for="radio-1" class="center">
-                        男宝宝
-                    </label>
-                </ons-list-item>
-                <ons-list-item tappable modifier="longdivider">
-                    <label class="left">
-                        <ons-input name="sex" type="radio" input-id="sex_2" modifier="material" value="girl" ng-model="vm.sex"></ons-input>
-                    </label>
-                    <label for="radio-2" class="center">
-                        女宝宝
-                    </label>
-                </ons-list-item>
-                <ons-list-header>身高</ons-list-header>
-                <ons-list-item modifier="longdivider">
-                    <ons-input id="height" modifier="material" placeholder="cm" float ng-model="vm.height"></ons-input>
-                </ons-list-item>
-                <ons-list-header>体重</ons-list-header>
-                <ons-list-item modifier="longdivider">
-                    <ons-input id="weight" modifier="material" placeholder="kg" float ng-model="vm.weight"></ons-input>
-                </ons-list-item>
-            </ons-list>
-            <br>
-            <ons-row>
-                <ons-col width="10%"></ons-col>
-                <ons-col><ons-button modifier="material large" ripple ng-click="ShowChart()"><ons-ripple></ons-ripple><ons-icon icon="fa-line-chart"></ons-icon> 查看生长曲线</ons-button></ons-col>
-                <ons-col width="10%"></ons-col>
-            </ons-row>
+            <form name="KidInfoForm" novalidate=""> 
+                <ons-list modifier="inset">
+                    <ons-list-header>生日</ons-list-header>
+                    <ons-list-item modifier="longdivider">
+                        <ons-input id="bdob" name="bdob" modifier="material" float ng-model="vm.bdob" required></ons-input><ons-icon icon="fa-calendar"></ons-icon>
+                    </ons-list-item>
+                    <ons-list-header>性别</ons-list-header>
+                    <ons-list-item tappable modifier="longdivider">
+                        <label class="left">
+                            <ons-input name="sex" type="radio" input-id="sex_1" modifier="material" value="Boy" ng-model="vm.sex" required></ons-input>
+                        </label>
+                        <label for="radio-1" class="center">
+                            男宝宝
+                        </label>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider">
+                        <label class="left">
+                            <ons-input name="sex" type="radio" input-id="sex_2" modifier="material" value="Girl" ng-model="vm.sex"></ons-input>
+                        </label>
+                        <label for="radio-2" class="center">
+                            女宝宝
+                        </label>
+                    </ons-list-item>
+                    <ons-list-header>曲线类别</ons-list-header>
+                    <ons-list-item tappable modifier="longdivider">
+                        <label class="left">
+                            <ons-input name="charttype" type="radio" input-id="charttype_1" modifier="material" value="身高" ng-model="vm.charttype" required></ons-input>
+                        </label>
+                        <label for="radio-1" class="center">
+                            身高
+                        </label>
+                    </ons-list-item>
+                    <ons-list-item tappable modifier="longdivider">
+                        <label class="left">
+                            <ons-input name="charttype" type="radio" input-id="charttype_2" modifier="material" value="体重" ng-model="vm.charttype"></ons-input>
+                        </label>
+                        <label for="radio-2" class="center">
+                            体重
+                        </label>
+                    </ons-list-item>
+                    <ons-list-header ng-show="KidInfoForm.charttype.$modelValue == '身高'">身高</ons-list-header>
+                    <ons-list-item modifier="longdivider" ng-show="KidInfoForm.charttype.$modelValue == '身高'">
+                        <ons-input id="height" name="height" modifier="material" placeholder="cm" float ng-model="vm.height" required></ons-input>                      
+                    </ons-list-item>
+                    <ons-list-header ng-show="KidInfoForm.charttype.$modelValue == '体重'">体重</ons-list-header>
+                    <ons-list-item modifier="longdivider" ng-show="KidInfoForm.charttype.$modelValue == '体重'">
+                        <ons-input id="weight" name="weight" modifier="material" placeholder="kg" float ng-model="vm.weight" required></ons-input>                       
+                    </ons-list-item>
+                </ons-list>
+                <br>
+                <ons-row>
+                    <ons-col width="10%"></ons-col>
+                    <ons-col><ons-button modifier="material large" ripple ng-click="ShowChart()" ng-disabled="!vm.height && !vm.weight"><ons-ripple></ons-ripple><ons-icon icon="fa-line-chart"></ons-icon> 查看{{vm.charttype}}生长曲线</ons-button></ons-col>
+                    <ons-col width="10%"></ons-col>
+                </ons-row>
+            </form>
+            aaa:
+            {{KidInfoForm.charttype}}
         </ons-page>
     </ons-navigator>
     <ons-template id="chart.html">
@@ -296,7 +366,7 @@
               <div class="left">
                 <ons-back-button>Back</ons-back-button>
               </div>
-              <div class="center">WHO生长曲线</div>
+              <div class="center">WHO生长曲线 - {{vm.sex=='Girl' ? '女宝宝' : '男宝宝'}}</div>
             </ons-toolbar>
             <div echarts="CHART_ID" config="CHART_OPTION" style="width:375px;height:600px;">
               
