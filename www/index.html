@@ -340,24 +340,23 @@
                             体重
                         </label>
                     </ons-list-item>
-                    <ons-list-header ng-show="KidInfoForm.charttype.$modelValue == '身高'">身高</ons-list-header>
-                    <ons-list-item modifier="longdivider" ng-show="KidInfoForm.charttype.$modelValue == '身高'">
+                    <ons-list-header ng-if="KidInfoForm.charttype.$modelValue == '身高'">身高</ons-list-header>
+                    <ons-list-item modifier="longdivider" ng-if="KidInfoForm.charttype.$modelValue == '身高'">
                         <ons-input id="height" name="height" modifier="material" placeholder="cm" float ng-model="vm.height" required></ons-input>                      
                     </ons-list-item>
-                    <ons-list-header ng-show="KidInfoForm.charttype.$modelValue == '体重'">体重</ons-list-header>
-                    <ons-list-item modifier="longdivider" ng-show="KidInfoForm.charttype.$modelValue == '体重'">
+                    <ons-list-header ng-if="KidInfoForm.charttype.$modelValue == '体重'">体重</ons-list-header>
+                    <ons-list-item modifier="longdivider" ng-if="KidInfoForm.charttype.$modelValue == '体重'">
                         <ons-input id="weight" name="weight" modifier="material" placeholder="kg" float ng-model="vm.weight" required></ons-input>                       
                     </ons-list-item>
                 </ons-list>
                 <br>
                 <ons-row>
                     <ons-col width="10%"></ons-col>
-                    <ons-col><ons-button modifier="material large" ripple ng-click="ShowChart()" ng-disabled="!vm.height && !vm.weight"><ons-ripple></ons-ripple><ons-icon icon="fa-line-chart"></ons-icon> 查看{{vm.charttype}}生长曲线</ons-button></ons-col>
+                    <ons-col><ons-button modifier="material large" ripple ng-click="ShowChart()" ng-disabled="(!vm.height && !vm.weight) && KidInfoForm.$invalid"><ons-ripple></ons-ripple><ons-icon icon="fa-line-chart"></ons-icon> 查看{{vm.charttype}}生长曲线</ons-button></ons-col>
                     <ons-col width="10%"></ons-col>
                 </ons-row>
             </form>
-            aaa:
-            {{KidInfoForm.charttype}}
+            {{KidInfoForm}}
         </ons-page>
     </ons-navigator>
     <ons-template id="chart.html">
