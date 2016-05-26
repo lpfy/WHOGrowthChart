@@ -35,14 +35,19 @@
     <link rel="stylesheet" type="text/css" href="lib/mobiscroll/css/mobiscroll.android-holo-light.css"/>
 
     <script>
-        var option = function(WHOGrowthData) {
-            return  {
+        var option = function(WHOGrowthData, charttype, weight, height, ageindays) {
+            var rs =  {
                         legend: {
                             show: false
                         },
                         tooltip: {
                             trigger: 'axis',
                             showDelay : 0,
+                            formatter : function (params) {
+                                    return params.seriesName + ' :<br/>'
+                                       + params.value[0] + '天 '
+                                       + params.value[1] + 'kg ';
+                            },
                             axisPointer:{
                                 show: true,
                                 type : 'cross',
@@ -186,6 +191,27 @@
                             }
                         ]
                     };
+                    
+            var dot;
+            if (charttype == "体重") {
+                dot = {
+                        name: '宝宝体重',
+                        type: 'scatter',
+                        symbol: 'circle',
+                        showSymbol: true,
+                        symbolSize: 10,
+                        itemStyle: {
+                            normal: {
+                                color: '#db1968'
+                            }                                
+                        },
+                        data: [[ageindays, weight]]
+                    };
+                rs["series"].push(dot);
+            } else {
+                
+            }
+            return rs;
         };
         var whogrowthchartApp = angular.module('whogrowthchart', ['onsen', 'echarts-ng']);
         whogrowthchartApp.directive('ngMin', function () {
@@ -239,6 +265,7 @@
         whogrowthchartApp.factory('vm', function () {
             return { 
                 bdob:'',
+                ageindays: '',
                 sex:'',
                 charttype:'',
                 height:'',
@@ -250,8 +277,9 @@
             $scope.vm = vm;            
             $scope.ShowChart = function(){
                 modalwait.show();
+                type = vm.charttype == '身高' ? 'Height' : 'Weight';
                 $scope.vm.dataSubset = {};
-                _.each(WHOGrowthData[vm.sex], function(value, key){ 
+                _.each(WHOGrowthData[type][vm.sex], function(value, key){ 
                     $scope.vm.dataSubset[key] = _.filter(value, function(item){ 
                         return item[0] >= vm.mindays && item[0] <= vm.maxdays 
                     });
@@ -275,9 +303,9 @@
                     onClosed: function (valueText, inst) {
                       $scope.vm.bdob = valueText;
                       $("#bdob").val(valueText);
-                      var AgeInDays = Math.abs(moment(vm.bdob, "YYYY/MM/DD").diff(moment(), 'days'));
-                      $scope.vm.mindays = AgeInDays - 50 <= 50 ? 0 : Math.floor((AgeInDays - 50)/10)*10; // Always get multiple of 10. Math.floor() get integer of division
-                      $scope.vm.maxdays = Math.floor((AgeInDays + 50)/10)*10;
+                      vm.ageindays = Math.abs(moment(vm.bdob, "YYYY/MM/DD").diff(moment(), 'days'));
+                      $scope.vm.mindays = vm.ageindays - 50 <= 50 ? 0 : Math.floor((vm.ageindays - 50)/10)*10; // Always get multiple of 10. Math.floor() get integer of division
+                      $scope.vm.maxdays = Math.floor((vm.ageindays + 50)/10)*10;
                     }
                 });
             });
@@ -286,7 +314,7 @@
             ons.ready(function() {
                 $scope.CHART_ID = $echarts.generateInstanceIdentity();
                 $scope.CHART_DIMENSION = "6:10"
-                $scope.CHART_OPTION = new option(vm.dataSubset);
+                $scope.CHART_OPTION = new option(vm.dataSubset, vm.charttype, vm.weight, vm.height, vm.ageindays);
                 $scope.vm = vm;
             });
         });
@@ -356,7 +384,7 @@
                     <ons-col width="10%"></ons-col>
                 </ons-row>
             </form>
-            {{KidInfoForm}}
+            <!--{{KidInfoForm}}-->
         </ons-page>
     </ons-navigator>
     <ons-template id="chart.html">
