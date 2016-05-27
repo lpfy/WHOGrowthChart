@@ -19,7 +19,7 @@
     <script type="text/javascript" src="lib/mobiscroll/js/mobiscroll.android-holo-light.js"></script>
     <script type="text/javascript" src="lib/mobiscroll/js/i18n/mobiscroll.i18n.zh.js"></script>
     <script type="text/javascript" src="lib/who/WHOGrowthData.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/echarts/3.1.7/echarts.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/echarts/3.1.10/echarts.common.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script> 
     <script type="text/javascript" src="lib/who/echarts-ng.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
@@ -35,7 +35,63 @@
     <link rel="stylesheet" type="text/css" href="lib/mobiscroll/css/mobiscroll.android-holo-light.css"/>
 
     <script>
+        var test;
+        var markerPointModel = function(label, textcolor, data) {
+            var rs = {
+                symbol: 'pin',
+                symbolSize: 1,
+                symbolOffset: [-25, 10],
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'bottom',
+                        formatter: label,
+                        textStyle: {
+                            color: textcolor,
+                            fontStyle: 'normal',
+                            fontWeight: 'bold',
+                            fontFamily: "-apple-system, 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif",
+                            fontSize: 12
+                        }
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        color: 'white'
+                    }
+                },
+                data: [{
+                    name: label,
+                    coord: data
+                }]
+            };
+            return rs;
+        };
+            
+        var lineSeriesModel = function(linename, linecolor, linedata, linemarker) {
+            var rs = {
+                name: linename,
+                type: 'line',
+                smooth: true,
+                large: true,
+                showSymbol: true,
+                symbolSize: 0,
+                lineStyle: {
+                    normal: {
+                        color: linecolor,
+                        width: 1,
+                        shadowColor: 'rgba(0,0,0,0.4)',
+                        shadowBlur: 10,
+                        shadowOffsetY: 10
+                    }
+                },
+                data: linedata,
+                markPoint:  linemarker
+            };
+            return rs;            
+        };
         var option = function(WHOGrowthData, charttype, weight, height, ageindays) {
+            var unit = charttype == '身高' ? 'cm' : 'kg' ;
             var rs =  {
                         legend: {
                             show: false
@@ -44,24 +100,33 @@
                             trigger: 'axis',
                             showDelay : 0,
                             formatter : function (params) {
-                                    return params.seriesName + ' :<br/>'
-                                       + params.value[0] + '天 '
-                                       + params.value[1] + 'kg ';
+                                switch(params.componentType){
+                                    case 'series':
+                                        if (params.value.length > 1) {
+                                            return params.seriesName + ' :<br/>'
+                                               + params.value[0] + '天 '
+                                               + params.value[1] + unit;
+                                        }
+                                    break;
+                                    case 'markPoint': case 'markLine':
+                                    break;
+                                }                                
                             },
                             axisPointer:{
                                 show: true,
                                 type : 'cross',
                                 lineStyle: {
                                     type : 'dashed',
-                                    width : 1
+                                    width : 1,
+                                    opacity: 0
                                 }
                             },
-                            zlevel: 1
+                            zlevel: 5
                         },
                         grid: {
-                            left: '5%',
-                            right: '4%',
-                            bottom: '5%',
+                            left: '4%',
+                            right: '3%',
+                            bottom: '6%',
                             top: '2%',
                             containLabel: true
                         },
@@ -83,7 +148,7 @@
                             {
                                 type : 'value',
                                 scale: true,
-                                name: '体重(kg)',
+                                name: charttype + '('+ unit +')',
                                 nameLocation: 'middle',
                                 nameGap: 25,
                                 nameTextStyle: {
@@ -99,103 +164,43 @@
                             }
                         ],
                         series: [
-                            {
-                                name: '3%',
-                                type: 'line',
-                                smooth: true,
-                                large: true,
-                                showSymbol: true,
-                                symbolSize: 0,
-                                lineStyle: {
-                                    normal: {
-                                        color: 'red',
-                                        width: 1,
-                                        shadowColor: 'rgba(0,0,0,0.4)',
-                                        shadowBlur: 10,
-                                        shadowOffsetY: 10
-                                    }
-                                },
-                                data: WHOGrowthData.P3byDays
-                            },
-                            {
-                                name: '15%',
-                                type: 'line',
-                                smooth: true,
-                                large: true,
-                                showSymbol: true,
-                                symbolSize: 0,
-                                lineStyle: {
-                                    normal: {
-                                        color: '#FFA500',
-                                        width: 1,
-                                        shadowColor: 'rgba(0,0,0,0.4)',
-                                        shadowBlur: 10,
-                                        shadowOffsetY: 10
-                                    }
-                                },
-                                data: WHOGrowthData.P15byDays
-                            },
-                            {
-                                name: '50%',
-                                type: 'line',
-                                smooth: true,
-                                large: true,
-                                showSymbol: false,
-                                symbolSize: 0,
-                                lineStyle: {
-                                    normal: {
-                                        color: 'green',
-                                        width: 1,
-                                        shadowColor: 'rgba(0,0,0,0.4)',
-                                        shadowBlur: 10,
-                                        shadowOffsetY: 10
-                                    }
-                                },
-                                data: WHOGrowthData.P50byDays
-                            },
-                            {
-                                name: '85%',
-                                type: 'line',
-                                smooth: true,
-                                large: true,
-                                showSymbol: false,
-                                symbolSize: 0,
-                                lineStyle: {
-                                    normal: {
-                                        color: '#FFA500',
-                                        width: 1,
-                                        shadowColor: 'rgba(0,0,0,0.4)',
-                                        shadowBlur: 10,
-                                        shadowOffsetY: 10
-                                    }
-                                },
-                                data: WHOGrowthData.P85byDays
-                            },
-                            {
-                                name: '97%',
-                                type: 'line',
-                                smooth: true,
-                                large: true,
-                                showSymbol: false,
-                                symbolSize: 1,
-                                lineStyle: {
-                                    normal: {
-                                        color: 'red',
-                                        width: 1,
-                                        shadowColor: 'rgba(0,0,0,0.4)',
-                                        shadowBlur: 10,
-                                        shadowOffsetY: 10
-                                    }
-                                },
-                                data: WHOGrowthData.P97byDays
-                            }
+                            new lineSeriesModel(
+                                '3%', 
+                                'red', 
+                                WHOGrowthData.P3byDays, 
+                                new markerPointModel('3%', '#d00', _.max(WHOGrowthData.P3byDays,function(x){return x[1]}) )
+                            ),
+                            new lineSeriesModel(
+                                '15%', 
+                                '#FFA500', 
+                                WHOGrowthData.P15byDays, 
+                                new markerPointModel('15%', '#ee9a00', _.max(WHOGrowthData.P15byDays,function(x){return x[1]}) )
+                            ),
+                            new lineSeriesModel(
+                                '50%', 
+                                '#009100', 
+                                WHOGrowthData.P50byDays, 
+                                new markerPointModel('50%', '#006f00', _.max(WHOGrowthData.P50byDays,function(x){return x[1]}) )
+                            ),
+                            new lineSeriesModel(
+                                '85%', 
+                                '#FFA500', 
+                                WHOGrowthData.P85byDays, 
+                                new markerPointModel('85%', '#ee9a00', _.max(WHOGrowthData.P85byDays,function(x){return x[1]}) )
+                            ),
+                            new lineSeriesModel(
+                                '97%', 
+                                'red', 
+                                WHOGrowthData.P97byDays, 
+                                new markerPointModel('97%', '#d00', _.max(WHOGrowthData.P97byDays,function(x){return x[1]}) )
+                            )
                         ]
                     };
                     
             var dot;
             if (charttype == "体重") {
                 dot = {
-                        name: '宝宝体重',
+                        name: '宝宝' + charttype,
                         type: 'scatter',
                         symbol: 'circle',
                         showSymbol: true,
@@ -205,7 +210,26 @@
                                 color: '#db1968'
                             }                                
                         },
-                        data: [[ageindays, weight]]
+                        zlevel: 2,
+                        data: [[ageindays, weight]],
+                        markLine: {
+                            lineStyle: {
+                                normal: {
+                                    color: '#bf70b0',
+                                    opacity: 0.5,
+                                    type: 'dashed'
+                                }
+                            },
+                            label: {
+                                normal: {
+                                    position: 'start'
+                                }
+                            },
+                            data: [
+                                {yAxis: parseFloat(weight)},
+                                {xAxis: ageindays}
+                            ]
+                        }
                     };
                 rs["series"].push(dot);
             } else {
@@ -316,6 +340,7 @@
                 $scope.CHART_DIMENSION = "6:10"
                 $scope.CHART_OPTION = new option(vm.dataSubset, vm.charttype, vm.weight, vm.height, vm.ageindays);
                 $scope.vm = vm;
+                test = new option(vm.dataSubset, vm.charttype, vm.weight, vm.height, vm.ageindays);
             });
         });
     </script>
@@ -393,10 +418,12 @@
               <div class="left">
                 <ons-back-button>Back</ons-back-button>
               </div>
-              <div class="center">WHO生长曲线 - {{vm.sex=='Girl' ? '女宝宝' : '男宝宝'}}</div>
+              <div class="center">WHO{{vm.charttype}}生长曲线 - {{vm.sex=='Girl' ? '女' : '男'}}</div>
             </ons-toolbar>
-            <div echarts="CHART_ID" config="CHART_OPTION" style="width:375px;height:600px;">
-              
+            <div id="ChartBox">
+                <div echarts="CHART_ID" config="CHART_OPTION" style="width:375px;height:620px;">
+                  
+                </div>
             </div>
         </ons-page>
     </ons-template>
