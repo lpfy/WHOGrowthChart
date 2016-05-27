@@ -233,7 +233,39 @@
                     };
                 rs["series"].push(dot);
             } else {
-                
+                dot = {
+                        name: '宝宝' + charttype,
+                        type: 'scatter',
+                        symbol: 'circle',
+                        showSymbol: true,
+                        symbolSize: 10,
+                        itemStyle: {
+                            normal: {
+                                color: '#db1968'
+                            }                                
+                        },
+                        zlevel: 2,
+                        data: [[ageindays, weight]],
+                        markLine: {
+                            lineStyle: {
+                                normal: {
+                                    color: '#bf70b0',
+                                    opacity: 0.5,
+                                    type: 'dashed'
+                                }
+                            },
+                            label: {
+                                normal: {
+                                    position: 'start'
+                                }
+                            },
+                            data: [
+                                {yAxis: parseFloat(height)},
+                                {xAxis: ageindays}
+                            ]
+                        }
+                    };
+                rs["series"].push(dot);
             }
             return rs;
         };
