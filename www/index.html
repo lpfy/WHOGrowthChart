@@ -35,7 +35,6 @@
     <link rel="stylesheet" type="text/css" href="lib/mobiscroll/css/mobiscroll.android-holo-light.css"/>
 
     <script>
-        var test;
         var markerPointModel = function(label, textcolor, data) {
             var rs = {
                 symbol: 'pin',
@@ -97,7 +96,7 @@
                             show: false
                         },
                         tooltip: {
-                            trigger: 'axis',
+                            trigger: 'item',
                             showDelay : 0,
                             formatter : function (params) {
                                 switch(params.componentType){
@@ -111,15 +110,6 @@
                                     case 'markPoint': case 'markLine':
                                     break;
                                 }                                
-                            },
-                            axisPointer:{
-                                show: true,
-                                type : 'cross',
-                                lineStyle: {
-                                    type : 'dashed',
-                                    width : 1,
-                                    opacity: 0
-                                }
                             },
                             zlevel: 5
                         },
@@ -340,6 +330,8 @@
                         return item[0] >= vm.mindays && item[0] <= vm.maxdays 
                     });
                 });
+                $scope.vm.chartht = $(window).height() - $("ons-toolbar").height();
+                $scope.vm.chartwt = $(window).width();
                 myNavigator.pushPage('chart.html', { 
                     animation : 'slide' 
                 });
@@ -368,11 +360,11 @@
         });
         whogrowthchartApp.controller('ChartController', function($scope, $echarts, vm) {
             ons.ready(function() {
+                $("#GChart").css({"height": vm.chartht, "width":vm.chartwt});
                 $scope.CHART_ID = $echarts.generateInstanceIdentity();
                 $scope.CHART_DIMENSION = "6:10"
                 $scope.CHART_OPTION = new option(vm.dataSubset, vm.charttype, vm.weight, vm.height, vm.ageindays);
                 $scope.vm = vm;
-                test = new option(vm.dataSubset, vm.charttype, vm.weight, vm.height, vm.ageindays);
             });
         });
     </script>
@@ -453,7 +445,7 @@
               <div class="center">WHO{{vm.charttype}}生长曲线 - {{vm.sex=='Girl' ? '女' : '男'}}</div>
             </ons-toolbar>
             <div id="ChartBox">
-                <div echarts="CHART_ID" config="CHART_OPTION" style="width:375px;height:620px;">
+                <div id="GChart" echarts="CHART_ID" config="CHART_OPTION" style="">
                   
                 </div>
             </div>

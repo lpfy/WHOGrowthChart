@@ -12,15 +12,12 @@
         "cordova-plugin-splashscreen@2.1.0"
     ],
     "title-ja": "",
-    "title-en": "1",
+    "title-en": "version 1.0",
     "description-ja": "",
-    "description-en": "1",
+    "description-en": "version 1.0",
     "category": "User Template",
     "platform": [
-        "android",
-        "ios",
-        "winrt",
-        "chrome"
+        "winrt"
     ],
-    "name": "generated-1463836916-5735ec5f7e2193ac47c52e4d"
+    "name": "generated-1464371587-5735ec5f7e2193ac47c52e4d"
 }
